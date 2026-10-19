@@ -23,12 +23,22 @@ Depth without ending.
 
 LiteLLM integration helps out switch between models easily and rapidly. This is easy to integrate via `AsyncOpenAI`:
 
+CAI uses Python 3.10+, OpenAI 2.24+, and LiteLLM 1.95.x. The accompanying
+proxy configuration exposes LiteLLM's native complexity-based auto-router.
+
 ```bash
 # launch server proxy with your configuration
 litellm --config examples/model_providers/litellm_config.yaml
 
 # then use the proxy via the SDK
 python3 examples/model_providers/litellm.py
+```
+
+The `smart-router` model lets LiteLLM classify each prompt and route it to the
+configured simple, medium, complex, or reasoning tier:
+
+```bash
+curl -s http://localhost:4000/v1/chat/completions -H "Content-Type: application/json" -d '{"model": "smart-router", "messages": [{"role": "user", "content": "Review this authentication design"}]}' | jq
 ```
 
 ### Testing the proxy server
